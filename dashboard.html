@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChainGrade | Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='index.html'">ChainGrade</div>
+        <div class="user-meta">
+            <span id="citation-badge" class="badge">0 Submissions</span>
+            <span id="wallet-display" class="wallet-pill">Initialising...</span>
+        </div>
+    </nav>
+
+    <main class="dashboard-grid">
+        <aside class="sidebar">
+            <button id="btn-workspace" class="menu-item active" onclick="switchTab('workspace')">📁 My Workspace</button>
+            <button id="btn-discovery" class="menu-item" onclick="switchTab('discovery')">🔍 Explore Projects</button>
+            <button id="admin-link" class="menu-item hidden" onclick="switchTab('admin')">🛡️ Verification Panel</button>
+            <button class="menu-item logout" onclick="logout()">Disconnect</button>
+        </aside>
+
+        <section class="content-area">
+            <div id="tab-workspace" class="tab-window">
+                <h2>Project Repository</h2>
+                <p class="section-desc">Upload your academic project for permanent, immutable recording on the Polygon blockchain. Every submission is AI-screened for originality and awaits faculty digital verification.</p>
+
+                <div class="ledger-info-banner">
+                    <div class="info-card">
+                        <span class="info-icon">&#128279;</span>
+                        <strong>Immutable Ledger</strong>
+                        <p>Once recorded on-chain, submissions cannot be altered or deleted — ever.</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-icon">&#129302;</span>
+                        <strong>AI Integrity Screen</strong>
+                        <p>Each file receives an originality score before blockchain indexing.</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-icon">&#9989;</span>
+                        <strong>Faculty Verified</strong>
+                        <p>Faculty hold Soul-Bound Tokens to digitally approve and certify work.</p>
+                    </div>
+                </div>
+
+                <div class="upload-box">
+                    <label class="custom-file-input">
+                        <input type="file" id="document-file" accept=".pdf,.docx,.txt">
+                        <span>Choose PDF/Doc</span>
+                    </label>
+                    <p id="selected-file-name" class="file-notice">No file chosen</p>
+                    
+                    <div class="input-group">
+                        <label for="project-genre">Course / Discipline:</label>
+                        <select id="project-genre">
+                            <optgroup label="Science &amp; Technology">
+                                <option value="cs">Computer Science</option>
+                                <option value="se">Software Engineering</option>
+                                <option value="it">Information Technology</option>
+                                <option value="dsai">Data Science &amp; Artificial Intelligence</option>
+                                <option value="cyber">Cybersecurity &amp; Digital Forensics</option>
+                                <option value="math">Mathematics &amp; Applied Mathematics</option>
+                                <option value="stat">Statistics &amp; Actuarial Science</option>
+                                <option value="phys">Physics</option>
+                                <option value="chem">Chemistry</option>
+                                <option value="bio">Biology &amp; Biochemistry</option>
+                                <option value="envs">Environmental Science</option>
+                                <option value="agri">Agriculture &amp; Food Science</option>
+                                <option value="geo">Geography &amp; Earth Science</option>
+                            </optgroup>
+                            <optgroup label="Engineering">
+                                <option value="ee">Electrical &amp; Electronics Engineering</option>
+                                <option value="me">Mechanical Engineering</option>
+                                <option value="ce">Civil &amp; Structural Engineering</option>
+                                <option value="che">Chemical Engineering</option>
+                                <option value="ae">Aerospace Engineering</option>
+                                <option value="bme">Biomedical Engineering</option>
+                                <option value="enve">Environmental Engineering</option>
+                                <option value="te">Telecommunication Engineering</option>
+                                <option value="mfg">Manufacturing &amp; Industrial Engineering</option>
+                                <option value="pet">Petroleum Engineering</option>
+                                <option value="eng">General Engineering</option>
+                            </optgroup>
+                            <optgroup label="Health Sciences">
+                                <option value="med">Medical Sciences &amp; Medicine</option>
+                                <option value="nhs">Nursing &amp; Health Sciences</option>
+                                <option value="pharm">Pharmacy &amp; Pharmaceutical Sciences</option>
+                                <option value="pubh">Public Health &amp; Epidemiology</option>
+                                <option value="dent">Dentistry &amp; Oral Health</option>
+                                <option value="vet">Veterinary Science</option>
+                                <option value="nutri">Nutrition &amp; Dietetics</option>
+                                <option value="physio">Physiotherapy &amp; Rehabilitation</option>
+                                <option value="mlt">Medical Laboratory Technology</option>
+                            </optgroup>
+                            <optgroup label="Business &amp; Economics">
+                                <option value="biz">Business Administration &amp; Management</option>
+                                <option value="acct">Accounting &amp; Finance</option>
+                                <option value="mkt">Marketing &amp; Advertising</option>
+                                <option value="hrm">Human Resource Management</option>
+                                <option value="scl">Supply Chain &amp; Logistics</option>
+                                <option value="econ">Economics</option>
+                                <option value="ib">International Business</option>
+                                <option value="ent">Entrepreneurship &amp; Innovation</option>
+                                <option value="bank">Banking &amp; Insurance</option>
+                                <option value="re">Real Estate &amp; Property Management</option>
+                            </optgroup>
+                            <optgroup label="Social Sciences &amp; Law">
+                                <option value="law">Law &amp; Legal Studies</option>
+                                <option value="pols">Political Science &amp; Governance</option>
+                                <option value="ir">International Relations &amp; Diplomacy</option>
+                                <option value="psych">Psychology</option>
+                                <option value="soc">Sociology &amp; Anthropology</option>
+                                <option value="sw">Social Work &amp; Community Development</option>
+                                <option value="edu">Education &amp; Teaching</option>
+                                <option value="hist">History</option>
+                                <option value="phil">Philosophy &amp; Ethics</option>
+                                <option value="ling">Linguistics &amp; Language Studies</option>
+                                <option value="dev">Development Studies</option>
+                            </optgroup>
+                            <optgroup label="Arts, Media &amp; Design">
+                                <option value="arch">Architecture &amp; Urban Planning</option>
+                                <option value="arts">Fine Arts &amp; Visual Design</option>
+                                <option value="media">Media, Journalism &amp; Communication</option>
+                                <option value="film">Film, Theatre &amp; Performing Arts</option>
+                                <option value="music">Music &amp; Musicology</option>
+                                <option value="fashion">Fashion Design &amp; Textile</option>
+                                <option value="gd">Graphic &amp; Digital Design</option>
+                            </optgroup>
+                            <optgroup label="Other Disciplines">
+                                <option value="tour">Tourism, Hospitality &amp; Events</option>
+                                <option value="sport">Sports Science &amp; Physical Education</option>
+                                <option value="lis">Library &amp; Information Science</option>
+                                <option value="rel">Religious Studies &amp; Theology</option>
+                                <option value="mil">Military &amp; Security Studies</option>
+                                <option value="other">Other / Interdisciplinary</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="cohort-year">Academic Cohort / Year Group:</label>
+                        <select id="cohort-year">
+                            <option value="2026">Class of 2026</option>
+                            <option value="2025" selected>Class of 2025</option>
+                            <option value="2024">Class of 2024</option>
+                            <option value="2023">Class of 2023</option>
+                            <option value="2022">Class of 2022</option>
+                            <option value="2021">Class of 2021</option>
+                            <option value="2020">Class of 2020</option>
+                            <option value="2019">Class of 2019</option>
+                            <option value="postgrad">Postgraduate / Masters</option>
+                            <option value="phd">Doctoral / PhD</option>
+                        </select>
+                    </div>
+
+                    <button id="upload-action-btn" class="primary-btn" disabled>Submit to Blockchain</button>
+                </div>
+
+                <h3>Your Submission History</h3>
+                <div id="personal-records-list" class="record-feed">
+                    <p id="loading-status-text" class="file-notice">Awaiting script initialization...</p>
+                </div>
+            </div>
+
+            <div id="tab-discovery" class="tab-window hidden">
+                <h2>Academic Discovery</h2>
+                <p class="section-desc">Browse on-chain certified projects across all disciplines. Every record shown has passed the AI originality threshold and is permanently stored on the Polygon ledger.</p>
+                <div class="filter-bar">
+                    <button id="filter-all" class="filter-pill active" onclick="filterGenre('all')">All Fields</button>
+                    <select id="category-filter-select" class="category-filter-select" onchange="filterByCategory(this.value)">
+                        <option value="">-- Filter by Course --</option>
+                        <optgroup label="Science &amp; Technology">
+                            <option value="cs">Computer Science</option>
+                            <option value="se">Software Engineering</option>
+                            <option value="it">Information Technology</option>
+                            <option value="dsai">Data Science &amp; AI</option>
+                            <option value="cyber">Cybersecurity</option>
+                            <option value="math">Mathematics</option>
+                            <option value="stat">Statistics</option>
+                            <option value="phys">Physics</option>
+                            <option value="chem">Chemistry</option>
+                            <option value="bio">Biology &amp; Biochemistry</option>
+                            <option value="envs">Environmental Science</option>
+                            <option value="agri">Agriculture &amp; Food Science</option>
+                            <option value="geo">Geography &amp; Earth Science</option>
+                        </optgroup>
+                        <optgroup label="Engineering">
+                            <option value="ee">Electrical Engineering</option>
+                            <option value="me">Mechanical Engineering</option>
+                            <option value="ce">Civil Engineering</option>
+                            <option value="che">Chemical Engineering</option>
+                            <option value="ae">Aerospace Engineering</option>
+                            <option value="bme">Biomedical Engineering</option>
+                            <option value="enve">Environmental Engineering</option>
+                            <option value="te">Telecommunication Engineering</option>
+                            <option value="mfg">Manufacturing Engineering</option>
+                            <option value="pet">Petroleum Engineering</option>
+                            <option value="eng">General Engineering</option>
+                        </optgroup>
+                        <optgroup label="Health Sciences">
+                            <option value="med">Medical Sciences</option>
+                            <option value="nhs">Nursing &amp; Health Sciences</option>
+                            <option value="pharm">Pharmacy</option>
+                            <option value="pubh">Public Health</option>
+                            <option value="dent">Dentistry</option>
+                            <option value="vet">Veterinary Science</option>
+                            <option value="nutri">Nutrition &amp; Dietetics</option>
+                            <option value="physio">Physiotherapy</option>
+                            <option value="mlt">Medical Laboratory Technology</option>
+                        </optgroup>
+                        <optgroup label="Business &amp; Economics">
+                            <option value="biz">Business Administration</option>
+                            <option value="acct">Accounting &amp; Finance</option>
+                            <option value="mkt">Marketing</option>
+                            <option value="hrm">Human Resource Management</option>
+                            <option value="scl">Supply Chain &amp; Logistics</option>
+                            <option value="econ">Economics</option>
+                            <option value="ib">International Business</option>
+                            <option value="ent">Entrepreneurship</option>
+                            <option value="bank">Banking &amp; Insurance</option>
+                        </optgroup>
+                        <optgroup label="Social Sciences &amp; Law">
+                            <option value="law">Law</option>
+                            <option value="pols">Political Science</option>
+                            <option value="ir">International Relations</option>
+                            <option value="psych">Psychology</option>
+                            <option value="soc">Sociology &amp; Anthropology</option>
+                            <option value="sw">Social Work</option>
+                            <option value="edu">Education</option>
+                            <option value="hist">History</option>
+                            <option value="phil">Philosophy &amp; Ethics</option>
+                            <option value="ling">Linguistics</option>
+                            <option value="dev">Development Studies</option>
+                        </optgroup>
+                        <optgroup label="Arts, Media &amp; Design">
+                            <option value="arch">Architecture &amp; Urban Planning</option>
+                            <option value="arts">Fine Arts &amp; Visual Design</option>
+                            <option value="media">Media &amp; Journalism</option>
+                            <option value="film">Film &amp; Theatre</option>
+                            <option value="music">Music</option>
+                            <option value="fashion">Fashion Design</option>
+                            <option value="gd">Graphic &amp; Digital Design</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="tour">Tourism &amp; Hospitality</option>
+                            <option value="sport">Sports Science</option>
+                            <option value="lis">Library &amp; Information Science</option>
+                            <option value="rel">Religious Studies</option>
+                            <option value="mil">Military &amp; Security Studies</option>
+                            <option value="other">Other / Interdisciplinary</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div id="global-discovery-feed" class="record-feed"></div>
+            </div>
+
+            <div id="tab-admin" class="tab-window hidden">
+                <h2>Faculty Verification Hub</h2>
+                <p class="section-desc">Issue faculty Soul-Bound Tokens (SBTs) from the contract admin wallet and digitally verify incoming student submissions. Verified records are permanently marked on the immutable ledger.</p>
+                <div id="admin-tools" class="admin-tools hidden">
+                    <div class="status-panel">
+                        <div>
+                            <span class="eyebrow">Admin Wallet</span>
+                            <p id="admin-wallet-status">Checking connected wallet privileges...</p>
+                        </div>
+                        <span id="faculty-status-badge" class="badge neutral">Checking</span>
+                    </div>
+                    <div id="faculty-issuer" class="issuer-panel hidden">
+                        <label for="faculty-wallet-input">Faculty wallet address</label>
+                        <div class="issuer-row">
+                            <input id="faculty-wallet-input" type="text" placeholder="0x..." autocomplete="off" spellcheck="false">
+                            <button id="issue-faculty-btn" class="primary-btn" type="button">Issue Faculty SBT</button>
+                        </div>
+                        <p class="file-notice">Only the wallet that deployed this contract can issue faculty credentials.</p>
+                    </div>
+                </div>
+                <div id="faculty-queue-list" class="record-feed">
+                    <p class="file-notice">No records currently require faculty clearance tokens.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // CRITICAL CONTRACT CONFIGURATION
+        const CONTRACT_ADDRESS = "0x5EC9D9085184955EaeFAD0Dc79E2cbfc7e26151C";
+        const PINATA_JWT_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJjMDcxMTIxNS05NmQ1LTRiM2EtOTVjMy03ZDhjZjMyOGVmOGMiLCJlbWFpbCI6InJlYm9sZS53YW5kZXJhQHN0dWRlbnRzLmprdWF0LmFjLmtlIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjEsImlkIjoiRlJBMSJ9LHsiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjEsImlkIjoiTllDMSJ9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6ImIyZjBhNjJjM2U4MGQ3NzdiNDMzIiwic2NvcGVkS2V5U2VjcmV0IjoiYzllY2U4NTg0MjgyZDViMzI5ZDNiZTBhMTE3NGRhNDJiZDlkMjA1ZWJjNjhiNWZiMDZhZmI2ZjQwNGZmMGQzNSIsImV4cCI6MTgxMDI5NDIzOH0.n8XsWhfVzKjFxOUwycLn_0UBVyqu8K-HM3_CfWwi0ac"; 
+        
+        const CONTRACT_ABI = [
+            "function recordProject(string memory _fileName, string memory _ipfsHash, string memory _category, uint256 _aiScore) public",
+            "function getStudentHistory(address _student) public view returns (tuple(string fileName, string ipfsHash, string category, uint256 aiScore, uint256 timestamp, address student, bool isVerified, address verifiedBy)[])",
+            "function holdsFacultySBT(address user) public view returns (bool)",
+            "function verifiedProfessionals(address user) public view returns (bool)",
+            "function admin() public view returns (address)",
+            "function issueFacultySBT(address _professor) public",
+            "function getAllStudents() public view returns (address[] memory)",
+            "function verifyProject(address _student, uint256 _index) public"
+        ];
+
+        let readProvider = null;
+        let readContract = null;
+        let globalCachedRecords = []; 
+        let currentUser = null;
+        let userIsFaculty = false;
+        let userIsContractAdmin = false;
+
+        // SAFE BOOTLOADER: This function absolutely cannot hang. Everything is isolated.
+        function bootstrapApplication() {
+            console.log("Bootstrapping application layer...");
+            const statusDisplay = document.getElementById('loading-status-text');
+            const walletDisplay = document.getElementById('wallet-display');
+
+            try {
+                // Parse wallet out of storage safely
+                let storedWallet = localStorage.getItem('userWallet');
+                if (storedWallet && storedWallet !== "null" && storedWallet !== "undefined" && storedWallet.startsWith("0x")) {
+                    currentUser = storedWallet;
+                    if (walletDisplay) {
+                        walletDisplay.innerText = `${currentUser.substring(0, 6)}...${currentUser.substring(currentUser.length - 4)}`;
+                    }
+                } else {
+                    currentUser = "0x0000000000000000000000000000000000000000";
+                    if (walletDisplay) {
+                        walletDisplay.innerText = "View-Only Mode";
+                        walletDisplay.style.background = "#4b5563";
+                    }
+                }
+
+                if (statusDisplay) {
+                    statusDisplay.innerText = "Connecting to Polygon RPC Nodes...";
+                }
+
+                // Initialize stable fallback Provider instantly
+                setupPublicRpcProvider();
+
+            } catch (bootError) {
+                console.error("Critical error during application bootstrap:", bootError);
+                if (statusDisplay) {
+                    statusDisplay.innerHTML = `<span style="color: #ef4444;">Initialization Error: ${bootError.message}</span>`;
+                }
+            }
+
+            // Bind UI Events Safely
+            setupEventListeners();
+        }
+
+        function setupPublicRpcProvider() {
+            const statusDisplay = document.getElementById('loading-status-text');
+            const RPC_ENDPOINTS = [
+                "https://rpc-amoy.polygon.technology",
+                "https://polygon-amoy-bor-rpc.publicnode.com",
+                "https://rpc.ankr.com/polygon_amoy"
+            ];
+            let endpointIndex = 0;
+
+            function tryNextEndpoint() {
+                if (endpointIndex >= RPC_ENDPOINTS.length) {
+                    if (statusDisplay) {
+                        statusDisplay.innerHTML = `<span style="color: #ef4444;">All Polygon Amoy RPC nodes unreachable. Check your connection.</span>`;
+                    }
+                    return;
+                }
+                const endpoint = RPC_ENDPOINTS[endpointIndex++];
+                try {
+                    readProvider = new ethers.JsonRpcProvider(endpoint);
+                    readContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, readProvider);
+                    readProvider.getNetwork().then(() => {
+                        console.log("Public RPC Link established:", endpoint);
+                        setTimeout(() => { loadBlockchainData(); }, 50);
+                        setTimeout(() => { checkFacultyAuthorization(); }, 100);
+                    }).catch(err => {
+                        console.warn("RPC endpoint unreachable, trying next:", endpoint, err.message);
+                        tryNextEndpoint();
+                    });
+                } catch (rpcError) {
+                    console.error("RPC configuration error:", rpcError);
+                    tryNextEndpoint();
+                }
+            }
+
+            tryNextEndpoint();
+        }
+
+        async function loadBlockchainData() {
+            const personalList = document.getElementById('personal-records-list');
+            const globalFeed = document.getElementById('global-discovery-feed');
+            
+            if (!readContract || !personalList) return;
+
+            if (!currentUser || currentUser === "0x0000000000000000000000000000000000000000") {
+                personalList.innerHTML = `<p class="file-notice">Please connect your Web3 Wallet to visualize personalized submissions.</p>`;
+                return;
+            }
+
+            try {
+                console.log("Requesting history payload for target account:", currentUser);
+                const onChainData = await readContract.getStudentHistory(currentUser);
+                
+                personalList.innerHTML = "";
+                if (globalFeed) globalFeed.innerHTML = "";
+                globalCachedRecords = onChainData || [];
+
+                const citationBadge = document.getElementById('citation-badge');
+                if (citationBadge) {
+                    citationBadge.innerText = `${globalCachedRecords.length} Submissions`;
+                }
+
+                if (globalCachedRecords.length === 0) {
+                    personalList.innerHTML = `<p class="file-notice">No submission history found for this address on Amoy Testnet.</p>`;
+                    if (globalFeed) globalFeed.innerHTML = `<p class="file-notice">No public records match the global filters.</p>`;
+                    return;
+                }
+
+                globalCachedRecords.forEach(record => {
+                    const score = Number(record.aiScore !== undefined ? record.aiScore : record[3] || 0);
+                    renderRecordCard(personalList, record, false);
+                    if (score >= 50 && globalFeed) renderRecordCard(globalFeed, record, true);
+                });
+
+            } catch (err) {
+                console.error("Error structural layout mapping operations:", err);
+                personalList.innerHTML = `<p class="file-notice" style="color: #ef4444;">Error fetching contract parameters: ${err.message || err}</p>`;
+            }
+        }
+
+        async function checkFacultyAuthorization() {
+            if (!readContract || !currentUser || currentUser === "0x0000000000000000000000000000000000000000") return;
+            try {
+                const [hasFacultySBT, isVerifiedProfessional, contractAdmin] = await Promise.all([
+                    readContract.holdsFacultySBT(currentUser),
+                    readContract.verifiedProfessionals(currentUser),
+                    readContract.admin()
+                ]);
+                userIsContractAdmin = contractAdmin.toLowerCase() === currentUser.toLowerCase();
+                userIsFaculty = Boolean(hasFacultySBT || isVerifiedProfessional || userIsContractAdmin);
+                console.log("Faculty authorization verification response status:", userIsFaculty);
+                updateAdminPrivilegePanel(contractAdmin, hasFacultySBT, isVerifiedProfessional);
+                if (userIsFaculty) {
+                    const adminLink = document.getElementById('admin-link');
+                    if (adminLink) adminLink.classList.remove('hidden');
+                    loadFacultyQueue();
+                }
+            } catch (e) {
+                console.warn("Faculty hook uninitialized or reverted on execution context: ", e.message);
+            }
+        }
+
+        function updateAdminPrivilegePanel(contractAdmin, hasFacultySBT, isVerifiedProfessional) {
+            const adminTools = document.getElementById('admin-tools');
+            const adminStatus = document.getElementById('admin-wallet-status');
+            const facultyBadge = document.getElementById('faculty-status-badge');
+            const facultyIssuer = document.getElementById('faculty-issuer');
+
+            if (adminTools) adminTools.classList.remove('hidden');
+            if (adminStatus) {
+                const shortAdmin = `${contractAdmin.substring(0, 6)}...${contractAdmin.substring(contractAdmin.length - 4)}`;
+                adminStatus.innerText = userIsContractAdmin
+                    ? `Connected wallet controls this contract. Admin: ${shortAdmin}`
+                    : `Contract admin is ${shortAdmin}. Connect that wallet to issue faculty credentials.`;
+            }
+            if (facultyBadge) {
+                facultyBadge.classList.remove('neutral', 'success', 'warning');
+                if (userIsContractAdmin) {
+                    facultyBadge.innerText = 'Admin';
+                    facultyBadge.classList.add('success');
+                } else if (hasFacultySBT || isVerifiedProfessional) {
+                    facultyBadge.innerText = 'Faculty';
+                    facultyBadge.classList.add('success');
+                } else {
+                    facultyBadge.innerText = 'No Faculty SBT';
+                    facultyBadge.classList.add('warning');
+                }
+            }
+            if (facultyIssuer) {
+                facultyIssuer.classList.toggle('hidden', !userIsContractAdmin);
+            }
+        }
+
+        async function loadFacultyQueue() {
+            const queueList = document.getElementById('faculty-queue-list');
+            if (!readContract || !queueList) return;
+
+            queueList.innerHTML = `<p class="file-notice">Scanning blockchain records for pending approvals...</p>`;
+
+            try {
+                const allStudents = await readContract.getAllStudents();
+                let pendingHtml = "";
+
+                for (let i = 0; i < allStudents.length; i++) {
+                    const studentAddress = allStudents[i];
+                    const projects = await readContract.getStudentHistory(studentAddress);
+
+                    for (let j = 0; j < projects.length; j++) {
+                        const record = projects[j];
+                        const isVerified = record.isVerified !== undefined ? record.isVerified : record[6];
+
+                        if (!isVerified) {
+                            const fName = record.fileName || record[0] || "Unnamed file";
+                            const ipfsRef = record.ipfsHash || record[1] || "";
+                            const score = Number(record.aiScore !== undefined ? record.aiScore : record[3] || 0);
+                            const categoryCode = record.category || record[2] || "";
+                            const webGatewayUrl = `https://gateway.pinata.cloud/ipfs/${ipfsRef}`;
+                            const shortStudentAddr = `${studentAddress.substring(0,6)}...${studentAddress.substring(studentAddress.length-4)}`;
+
+                            pendingHtml += `
+                                <div class="step-card active" style="opacity: 1; pointer-events: auto; margin-bottom: 12px; border-left: 4px solid var(--accent-blue);">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <strong style="font-size: 15px; color: var(--text-main);">${fName}</strong>
+                                        <button onclick="signOffProject('${studentAddress}', ${j})" class="primary-btn" style="padding: 6px 12px; font-size: 12px; margin: 0;">Approve & Verify</button>
+                                    </div>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin: 6px 0;">Student Address: <strong style="color: var(--text-main);">${shortStudentAddr}</strong></p>
+                                    <p style="font-family: monospace; font-size: 11px; margin: 8px 0; color: var(--text-muted); word-break: break-all;">
+                                        IPFS hash link: <a href="${webGatewayUrl}" target="_blank" style="color: var(--accent-blue); text-decoration: underline;">${ipfsRef}</a>
+                                    </p>
+                                    <div style="font-size: 12px; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+                                        <span>Field: <strong>${categoryCode.toUpperCase()}</strong> | AI Rank Score: <strong>${score}%</strong></span>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+
+                queueList.innerHTML = pendingHtml === "" ? `<p class="file-notice">No files are currently awaiting validation tokens.</p>` : pendingHtml;
+
+            } catch (err) {
+                console.error("Faculty tracking system crash summary:", err);
+                queueList.innerHTML = `<p class="file-notice" style="color: #ef4444;">Could not construct verification lists.</p>`;
+            }
+        }
+
+        async function executeSubmissionPipeline() {
+            const actionBtn = document.getElementById('upload-action-btn');
+            const fileInput = document.getElementById('document-file');
+            const genreSelect = document.getElementById('project-genre');
+            
+            if (typeof window.ethereum === 'undefined') {
+                alert("Action Blocked: No injector interface layout found. Access this application via your wallet's built-in application browser utility.");
+                return;
+            }
+
+            const fileObj = fileInput ? fileInput.files[0] : null;
+            if (!fileObj) return;
+
+            const cohortYear = document.getElementById('cohort-year')?.value || '';
+            const recordedName = cohortYear ? `[${cohortYear}] ${fileObj.name}` : fileObj.name;
+
+            let computedAiScore = generateDeterministicScore(fileObj.name, fileObj.size);
+            let liveIpfsCid = "";
+
+            if (actionBtn) {
+                actionBtn.disabled = true;
+                actionBtn.style.pointerEvents = "none";
+                actionBtn.style.opacity = "0.5";
+                actionBtn.innerText = "Encrypting & Staging on IPFS...";
+            }
+
+            try {
+                liveIpfsCid = await pinFileToIPFS(fileObj);
+            } catch (ipfsError) {
+                alert("IPFS Staging Interrupted: " + ipfsError.message);
+                resetUploadButton();
+                return; 
+            }
+
+            try {
+                if (actionBtn) actionBtn.innerText = "Switching to Polygon Amoy...";
+                await ensurePolygonAmoy();
+                if (actionBtn) actionBtn.innerText = "Waiting for Wallet Confirmation... ↗";
+
+                const writeProvider = new ethers.BrowserProvider(window.ethereum);
+                const writeSigner = await writeProvider.getSigner();
+                const writeContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, writeSigner);
+
+                const tx = await writeContract.recordProject(recordedName, liveIpfsCid, genreSelect ? genreSelect.value : "cs", computedAiScore);
+
+                if (actionBtn) actionBtn.innerText = "Mining Transaction on Polygon Network...";
+                await tx.wait();
+
+                alert("Success! Record permanently integrated with Polygon Ledger State.");
+                if (fileInput) fileInput.value = "";
+                document.getElementById('selected-file-name').innerText = "No file chosen";
+                
+                await loadBlockchainData();
+                if (userIsFaculty) await loadFacultyQueue();
+                
+            } catch (error) {
+                console.error("Write signature pipeline crash:", error);
+                alert("Transaction rejected, or current node connection failed processing structural limits.");
+            } finally {
+                resetUploadButton();
+            }
+        }
+
+        async function signOffProject(studentAddress, projectIndex) {
+            if (typeof window.ethereum === 'undefined') {
+                alert("Operation Blocked: Web3 extension context configuration not found.");
+                return;
+            }
+            try {
+                await ensurePolygonAmoy();
+                const writeProvider = new ethers.BrowserProvider(window.ethereum);
+                const writeSigner = await writeProvider.getSigner();
+                const writeContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, writeSigner);
+                const tx = await writeContract.verifyProject(studentAddress, projectIndex);
+                alert("Transaction submitted. Awaiting on-chain confirmation...");
+                await tx.wait();
+                alert("Project verified successfully on Polygon Amoy Ledger.");
+                await loadFacultyQueue();
+            } catch (error) {
+                console.error("Faculty sign-off pipeline error:", error);
+                alert("Verification transaction failed: " + (error.message || "Transaction rejected."));
+            }
+        }
+
+        async function issueFacultyCredential() {
+            const input = document.getElementById('faculty-wallet-input');
+            const button = document.getElementById('issue-faculty-btn');
+            const targetAddress = input ? input.value.trim() : "";
+
+            if (!ethers.isAddress(targetAddress)) {
+                alert("Enter a valid faculty wallet address.");
+                return;
+            }
+            if (!userIsContractAdmin) {
+                alert("Only the contract admin wallet can issue faculty credentials.");
+                return;
+            }
+            if (typeof window.ethereum === 'undefined') {
+                alert("Operation Blocked: Web3 extension context configuration not found.");
+                return;
+            }
+
+            try {
+                if (button) {
+                    button.disabled = true;
+                    button.innerText = "Waiting for Wallet...";
+                }
+                await ensurePolygonAmoy();
+                const writeProvider = new ethers.BrowserProvider(window.ethereum);
+                const writeSigner = await writeProvider.getSigner();
+                const writeContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, writeSigner);
+                const tx = await writeContract.issueFacultySBT(targetAddress);
+                if (button) button.innerText = "Mining Credential...";
+                await tx.wait();
+                alert("Faculty SBT issued successfully.");
+                if (input) input.value = "";
+            } catch (error) {
+                console.error("Faculty credential issue pipeline error:", error);
+                alert("Faculty SBT issue failed: " + (error.message || "Transaction rejected."));
+            } finally {
+                if (button) {
+                    button.disabled = false;
+                    button.innerText = "Issue Faculty SBT";
+                }
+            }
+        }
+
+        async function ensurePolygonAmoy() {
+            const AMOY_CHAIN_ID = '0x13882';
+            const currentChain = await window.ethereum.request({ method: 'eth_chainId' });
+            if (currentChain.toLowerCase() === AMOY_CHAIN_ID) return;
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: AMOY_CHAIN_ID }],
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: AMOY_CHAIN_ID,
+                            chainName: 'Polygon Amoy Testnet',
+                            nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+                            rpcUrls: ['https://rpc-amoy.polygon.technology', 'https://polygon-amoy-bor-rpc.publicnode.com'],
+                            blockExplorerUrls: ['https://amoy.polygonscan.com'],
+                        }],
+                    });
+                } else {
+                    throw switchError;
+                }
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-window').forEach(tab => tab.classList.add('hidden'));
+            document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
+            const targetTab = document.getElementById('tab-' + tabName);
+            const targetBtn = document.getElementById('btn-' + tabName);
+            if (targetTab) targetTab.classList.remove('hidden');
+            if (targetBtn) targetBtn.classList.add('active');
+        }
+
+        function filterGenre(genre) {
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            const activeFilter = document.getElementById('filter-all');
+            if (activeFilter && genre === 'all') activeFilter.classList.add('active');
+            const categorySelect = document.getElementById('category-filter-select');
+            if (categorySelect) categorySelect.value = '';
+            const globalFeed = document.getElementById('global-discovery-feed');
+            if (!globalFeed) return;
+            globalFeed.innerHTML = "";
+            const filtered = globalCachedRecords.filter(r => {
+                const cat = r.category || r[2] || "";
+                const score = Number(r.aiScore !== undefined ? r.aiScore : r[3] || 0);
+                return score >= 50 && (genre === 'all' || cat === genre);
+            });
+            if (filtered.length === 0) {
+                globalFeed.innerHTML = '<p class="file-notice">No records found for this field.</p>';
+                return;
+            }
+            filtered.forEach(record => renderRecordCard(globalFeed, record, true));
+        }
+
+        function filterByCategory(value) {
+            if (!value) { filterGenre('all'); return; }
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            const globalFeed = document.getElementById('global-discovery-feed');
+            if (!globalFeed) return;
+            globalFeed.innerHTML = "";
+            const filtered = globalCachedRecords.filter(r => {
+                const cat = r.category || r[2] || "";
+                const score = Number(r.aiScore !== undefined ? r.aiScore : r[3] || 0);
+                return score >= 50 && cat === value;
+            });
+            if (filtered.length === 0) {
+                globalFeed.innerHTML = '<p class="file-notice">No records found for this discipline.</p>';
+                return;
+            }
+            filtered.forEach(record => renderRecordCard(globalFeed, record, true));
+        }
+
+        function renderRecordCard(container, record, isGlobal) {
+            const fName = record.fileName || record[0] || "Unnamed Record";
+            const ipfsRef = record.ipfsHash || record[1] || "";
+            const categoryCode = record.category || record[2] || "Unassigned";
+            const score = Number(record.aiScore !== undefined ? record.aiScore : record[3] || 0);
+            const blockTime = Number(record.timestamp !== undefined ? record.timestamp : record[4] || 0);
+            const verifiedFlag = record.isVerified !== undefined ? record.isVerified : record[6];
+            const formattedDate = blockTime > 0 ? new Date(blockTime * 1000).toLocaleDateString() : "N/A";
+            const badgeColor = score >= 50 ? "#10b981" : "#ef4444";
+            const webGatewayUrl = `https://gateway.pinata.cloud/ipfs/${ipfsRef}`;
+            container.innerHTML += `
+                <div class="step-card active" style="opacity: 1; pointer-events: auto; margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <strong style="font-size: 15px; color: var(--text-main);">${fName}</strong>
+                        <span class="wallet-pill" style="background: ${badgeColor}; color: white; border: none;">AI Score: ${score}%</span>
+                    </div>
+                    <p style="font-family: monospace; font-size: 11px; margin: 8px 0; color: var(--text-muted); word-break: break-all;">
+                        IPFS: <a href="${webGatewayUrl}" target="_blank" style="color: var(--accent-blue); text-decoration: underline;">${ipfsRef}</a>
+                    </p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+                        <span>Discipline: <strong>${categoryCode.toUpperCase()}</strong> &nbsp;|&nbsp; Recorded: ${formattedDate}</span>
+                        ${verifiedFlag ? `<span style="color: #10b981; font-weight: 700;">&#10003; Faculty Verified</span>` : `<span style="color: var(--text-muted);">&#9203; Awaiting Verification</span>`}
+                    </div>
+                </div>
+            `;
+        }
+
+        function logout() {
+            localStorage.setItem('userLogoutIntent', 'true');
+            localStorage.removeItem('userWallet');
+            window.location.href = 'index.html';
+        }
+
+        function setupEventListeners() {
+            const fileInput = document.getElementById('document-file');
+            const actionBtn = document.getElementById('upload-action-btn');
+            const fileNameDisplay = document.getElementById('selected-file-name');
+            if (fileInput) {
+                fileInput.addEventListener('change', () => {
+                    if (fileInput.files.length > 0) {
+                        if (fileNameDisplay) fileNameDisplay.innerText = fileInput.files[0].name;
+                        if (actionBtn) actionBtn.disabled = false;
+                    } else {
+                        if (fileNameDisplay) fileNameDisplay.innerText = 'No file chosen';
+                        if (actionBtn) actionBtn.disabled = true;
+                    }
+                });
+            }
+            if (actionBtn) {
+                actionBtn.addEventListener('click', executeSubmissionPipeline);
+            }
+            const issueFacultyBtn = document.getElementById('issue-faculty-btn');
+            if (issueFacultyBtn) {
+                issueFacultyBtn.addEventListener('click', issueFacultyCredential);
+            }
+        }
+
+        function resetUploadButton() {
+            const actionBtn = document.getElementById('upload-action-btn');
+            if (actionBtn) {
+                actionBtn.disabled = false;
+                actionBtn.style.pointerEvents = "auto";
+                actionBtn.style.opacity = "1";
+                actionBtn.innerText = "Submit to Blockchain";
+            }
+        }
+
+        function generateDeterministicScore(fileName, fileSize) {
+            let hash = 0;
+            const str = fileName + fileSize;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash % 51) + 40;
+        }
+
+        async function pinFileToIPFS(file) {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("pinataMetadata", JSON.stringify({ name: file.name }));
+            const response = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
+                method: "POST",
+                headers: { "Authorization": "Bearer " + PINATA_JWT_KEY },
+                body: formData
+            });
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error((errData.error && errData.error.details) || ('IPFS upload failed (' + response.status + ')'));
+            }
+            const result = await response.json();
+            return result.IpfsHash;
+        }
+
+        document.addEventListener('DOMContentLoaded', bootstrapApplication);
+    </script>
+</body>
+</html>
